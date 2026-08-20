@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { ProductDetail } from '@/components/products/product-detail';
 import { ProductCard } from '@/components/products/product-card';
-import type { PublicProduct } from '@/types/database';
+import type { Product } from '@/types/database';
 
 export async function generateMetadata({
   params,
@@ -55,7 +55,7 @@ export default async function ProductPage({
   }
 
   // Related products (same category)
-  let related: PublicProduct[] = [];
+  let related: Product[] = [];
   if (product.category_id) {
     const { data } = await supabase
       .from('products')
@@ -70,12 +70,12 @@ export default async function ProductPage({
       .neq('id', product.id)
       .limit(4);
 
-    related = (data as PublicProduct[]) || [];
+    related = (data as unknown as Product[]) || [];
   }
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      <ProductDetail product={product as PublicProduct} />
+      <ProductDetail product={product as unknown as Product} />
 
       {related.length > 0 && (
         <section className="mt-20 border-t border-neutral-200 pt-16">
