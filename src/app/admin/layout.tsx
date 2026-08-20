@@ -13,6 +13,8 @@ import {
   Settings,
 } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 const nav = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
