@@ -3,23 +3,6 @@ import { formatPrice, formatDate } from '@/lib/utils';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 
-type PaidOrder = { total: number | string };
-type RecentOrder = {
-  id: string;
-  order_number: string;
-  email: string;
-  total: number | string;
-  order_status: string;
-  payment_status: string;
-  created_at: string;
-};
-type LowStockProduct = {
-  id: string;
-  name: string;
-  sku: string | null;
-  stock: number;
-};
-
 export default async function AdminDashboard() {
   const supabase = createServiceClient();
 
@@ -54,10 +37,7 @@ export default async function AdminDashboard() {
   ]);
 
   // Revenue calculation (simplified - real profit needs cost from order items)
-  const revenue = (paidOrders as PaidOrder[] | null || []).reduce(
-    (sum: number, o: PaidOrder) => sum + Number(o.total),
-    0
-  );
+  const revenue = (paidOrders || []).reduce((sum: number, o: { total: number }) => sum + Number(o.total), 0);
 
   const stats = [
     { label: 'Revenue', value: formatPrice(revenue), sub: 'Paid orders' },
@@ -70,9 +50,7 @@ export default async function AdminDashboard() {
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-neutral-900 font-display">
-            Dashboard
-          </h1>
+          <h1 className="text-2xl font-bold tracking-tight text-neutral-900 font-display">Dashboard</h1>
           <p className="mt-1 text-sm text-neutral-500">Overview of your store</p>
         </div>
         <Link
@@ -119,7 +97,15 @@ export default async function AdminDashboard() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-neutral-50">
-                {(recentOrders as RecentOrder[] | null || []).map((order) => (
+                {(recentOrders || []).map((order: {
+                  id: string;
+                  order_number: string;
+                  email: string;
+                  total: number;
+                  order_status: string;
+                  payment_status: string;
+                  created_at: string;
+                }) => (
                   <tr key={order.id} className="hover:bg-neutral-50">
                     <td className="px-6 py-3">
                       <Link
@@ -161,7 +147,7 @@ export default async function AdminDashboard() {
             <h2 className="font-semibold text-neutral-900">Low stock</h2>
           </div>
           <ul className="divide-y divide-neutral-50">
-            {(lowStock as LowStockProduct[] | null || []).map((p) => (
+            {(lowStock || []).map((p: { id: string; name: string; sku: string | null; stock: number }) => (
               <li key={p.id} className="flex items-center justify-between px-6 py-3">
                 <div>
                   <Link
@@ -170,7 +156,9 @@ export default async function AdminDashboard() {
                   >
                     {p.name}
                   </Link>
-                  {p.sku && <p className="text-xs text-neutral-400">{p.sku}</p>}
+                  {p.sku && (
+                    <p className="text-xs text-neutral-400">{p.sku}</p>
+                  )}
                 </div>
                 <span
                   className={`text-sm font-semibold ${
