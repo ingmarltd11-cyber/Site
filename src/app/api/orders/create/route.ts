@@ -58,7 +58,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Products not found' }, { status: 400 });
     }
 
-    const productMap = new Map(products.map((p) => [p.id, p]));
+    type ProductRow = {
+  id: string;
+  name: string;
+  sku: string | null;
+  price: number;
+  stock: number;
+  is_published: boolean;
+  min_order_quantity: number | null;
+};
+
+const productMap = new Map<string, ProductRow>(
+  (products as ProductRow[]).map((p) => [p.id, p])
+);
 
     // Validate items & calculate subtotal
     let subtotal = 0;
