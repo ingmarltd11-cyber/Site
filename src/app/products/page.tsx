@@ -8,6 +8,7 @@ export const metadata = {
 };
 
 interface SearchParams {
+  [key: string]: string | undefined;
   q?: string;
   category?: string;
   min_price?: string;
@@ -112,11 +113,7 @@ export default async function ProductsPage({
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="mb-8">
         <h1 className="text-3xl font-semibold tracking-tight text-neutral-900 font-display">
-          {params.q
-            ? `Search: “${params.q}”`
-            : params.featured === 'true'
-            ? 'Best Sellers'
-            : 'Products'}
+          {params.q ? `Search: “${params.q}”` : params.featured === 'true' ? 'Best Sellers' : 'Products'}
         </h1>
         <p className="mt-2 text-neutral-600">
           {count ?? 0} product{(count ?? 0) !== 1 ? 's' : ''} found
@@ -127,7 +124,7 @@ export default async function ProductsPage({
         <aside className="w-full shrink-0 lg:w-64">
           <ProductFilters
             categories={categories || []}
-            currentParams={params as Record<string, string | undefined>}
+            currentParams={params}
           />
         </aside>
 
@@ -175,4 +172,4 @@ export default async function ProductsPage({
       </div>
     </div>
   );
-}p
+}
