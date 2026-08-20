@@ -18,7 +18,7 @@ export default async function AdminEmailsPage() {
       </p>
 
       <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
-        {(templates || []).map((t) => (
+        {(templates || []).map((t: { id: string; name: string; type: string; is_enabled: boolean; subject: string }) => (
           <Link
             key={t.id}
             href={`/admin/emails/${t.id}`}
