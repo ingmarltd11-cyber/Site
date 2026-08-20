@@ -91,7 +91,17 @@ export default async function AdminOrdersPage({
             </tr>
           </thead>
           <tbody className="divide-y divide-neutral-100">
-            {(orders || []).map((order) => (
+            {(orders || []).map((order: {
+              id: string;
+              order_number: string;
+              email: string;
+              first_name: string | null;
+              last_name: string | null;
+              total: number;
+              order_status: string;
+              payment_status: string;
+              created_at: string;
+            }) => (
               <tr key={order.id} className="hover:bg-neutral-50">
                 <td className="px-4 py-3">
                   <Link
