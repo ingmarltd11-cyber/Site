@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { ProductCard } from '@/components/products/product-card';
 import { ProductFilters } from '@/components/products/product-filters';
-import type { PublicProduct } from '@/types/database';
+import type { Product } from '@/types/database';
 
 export const metadata = {
   title: 'Products',
@@ -139,7 +139,7 @@ export default async function ProductsPage({
           ) : (
             <>
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
-                {(products as PublicProduct[]).map((product) => (
+                {(products as unknown as Product[]).map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
               </div>
@@ -175,4 +175,4 @@ export default async function ProductsPage({
       </div>
     </div>
   );
-}
+}p
