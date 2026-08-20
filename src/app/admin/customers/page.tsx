@@ -28,7 +28,7 @@ export default async function AdminCustomersPage({
             </tr>
           </thead>
           <tbody className="divide-y divide-neutral-100">
-            {(customers || []).map((c) => (
+            {(customers || []).map((c: { id: string; first_name: string | null; last_name: string | null; email: string; company_name: string | null; created_at: string }) => (
               <tr key={c.id}>
                 <td className="px-4 py-3 font-medium">{c.first_name} {c.last_name}</td>
                 <td className="px-4 py-3 text-neutral-600">{c.email}</td>
