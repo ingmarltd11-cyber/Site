@@ -35,7 +35,7 @@ export default async function AnalyticsPage() {
     supabase.from('orders').select('order_status').gte('created_at', currentStart.toISOString()),
   ]);
 
-  const orderIds = (currentOrders || []).map((o) => o.id);
+  const orderIds = (currentOrders || []).map((o: { id: string }) => o.id);
   const { data: items } = orderIds.length
     ? await supabase
         .from('order_items')
@@ -44,8 +44,8 @@ export default async function AnalyticsPage() {
     : { data: [] as { product_id: string | null; product_name: string; product_sku: string | null; quantity: number; total_price: number; order_id: string }[] };
 
   // --- Headline metrics ---
-  const revenue = (currentOrders || []).reduce((s, o) => s + Number(o.total), 0);
-  const prevRevenue = (previousOrders || []).reduce((s, o) => s + Number(o.total), 0);
+  const revenue = (currentOrders || []).reduce((s: number, o: { total: number }) => s + Number(o.total), 0);
+  const prevRevenue = (previousOrders || []).reduce((s: number, o: { total: number }) => s + Number(o.total), 0);
   const orderCount = (currentOrders || []).length;
   const prevOrderCount = (previousOrders || []).length;
   const aov = orderCount ? revenue / orderCount : 0;
