@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { ProductCard } from '@/components/products/product-card';
 import { ProductFilters } from '@/components/products/product-filters';
-import type { Product } from '@/types/database';
+import type { PublicProduct } from '@/types/database';
 
 export const metadata = {
   title: 'Products',
@@ -87,88 +87,4 @@ export default async function ProductsPage({
       query = query.order('created_at', { ascending: false });
       break;
     case 'name':
-      query = query.order('name', { ascending: true });
-      break;
-    default:
-      query = query.order('created_at', { ascending: false });
-  }
-
-  const { data: products, count, error } = await query.range(from, to);
-
-  if (error) {
-    console.error('Products fetch error:', error);
-  }
-
-  const totalPages = Math.ceil((count || 0) / perPage);
-
-  // Fetch categories for filters
-  const { data: categories } = await supabase
-    .from('categories')
-    .select('id, name, slug')
-    .eq('is_active', true)
-    .order('sort_order');
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-semibold tracking-tight text-neutral-900 font-display">
-          {params.q ? `Search: “${params.q}”` : params.featured === 'true' ? 'Best Sellers' : 'Products'}
-        </h1>
-        <p className="mt-2 text-neutral-600">
-          {count ?? 0} product{(count ?? 0) !== 1 ? 's' : ''} found
-        </p>
-      </div>
-
-      <div className="flex flex-col gap-8 lg:flex-row">
-        <aside className="w-full shrink-0 lg:w-64">
-          <ProductFilters
-            categories={categories || []}
-            currentParams={params}
-          />
-        </aside>
-
-        <div className="flex-1">
-          {!products || products.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-neutral-300 py-20 text-center">
-              <p className="text-neutral-500">No products found.</p>
-            </div>
-          ) : (
-            <>
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
-                {(products as Product[]).map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
-
-              {/* Pagination */}
-              {totalPages > 1 && (
-                <div className="mt-12 flex items-center justify-center gap-2">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
-                    const sp = new URLSearchParams();
-                    Object.entries(params).forEach(([k, v]) => {
-                      if (v && k !== 'page') sp.set(k, v);
-                    });
-                    if (p > 1) sp.set('page', String(p));
-                    return (
-                      <a
-                        key={p}
-                        href={`/products?${sp.toString()}`}
-                        className={`flex h-10 w-10 items-center justify-center rounded-lg text-sm font-medium transition ${
-                          p === page
-                            ? 'bg-accent-500 text-white'
-                            : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
-                        }`}
-                      >
-                        {p}
-                      </a>
-                    );
-                  })}
-                </div>
-              )}
-            </>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
+      query = query.order('name', {
